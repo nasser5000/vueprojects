@@ -1,6 +1,7 @@
 <script setup>
   import { ref} from "vue"
   const showModal = ref(false)
+  const errorMessage = ref("")
   // create array to save card
   const newnote = ref("")
   const notes = ref([])
@@ -12,6 +13,9 @@
 
   //addnote function
   const addNote = () =>{
+    if(newnote.value.length < 10){
+      return errorMessage.value = "the note must be atleast 10 carachters"
+    }
     notes.value.push({
       id: Math.floor(Math.random() * 1000000),
       title: newnote.value,
@@ -29,7 +33,8 @@
   <main>
     <div v-if="showModal" class="overlay">
       <div class="modal">
-        <textarea v-model="newnote" name="note" id="note" cols="30" rows="10" autofocus></textarea>
+        <textarea v-model.trim="newnote" name="note" id="note" cols="30" rows="10" autofocus></textarea>
+        <p>{{ errorMessage }}</p>
         <button @click="addNote" class="add">Add Note</button>
         <button @click="showModal=false" class="close">Close</button>
       </div>
@@ -150,5 +155,9 @@
     textarea:focus {
       outline: none !important;
       border: 0.3px solid #a1b4e9;
+    }
+    .modal p {
+      color: red;
+      font-size: 16px;
     }
 </style>
