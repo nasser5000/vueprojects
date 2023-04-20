@@ -1,6 +1,27 @@
 <script setup>
   import { ref} from "vue"
   const showModal = ref(false)
+  // create array to save card
+  const newnote = ref("")
+  const notes = ref([])
+
+  //generate light color function
+  function getRandomLightColor(){
+    return "hsl("+ Math.random() * 360 + ", 100%, 75%)";
+  }
+
+  //addnote function
+  const addNote = () =>{
+    notes.value.push({
+      id: Math.floor(Math.random() * 1000000),
+      title: newnote.value,
+      date: new Date(),
+      backgroundColor:getRandomLightColor()
+    })
+    newnote.value = ""
+    showModal.value = false
+
+  }
 </script>
 
 
@@ -8,8 +29,8 @@
   <main>
     <div v-if="showModal" class="overlay">
       <div class="modal">
-        <textarea name="note" id="note" cols="30" rows="10"></textarea>
-        <button class="add">Add Note</button>
+        <textarea v-model="newnote" name="note" id="note" cols="30" rows="10" autofocus></textarea>
+        <button @click="addNote" class="add">Add Note</button>
         <button @click="showModal=false" class="close">Close</button>
       </div>
     </div>
@@ -19,9 +40,9 @@
         <button @click="showModal = true">+</button>
       </header>
       <div class="card-container">
-        <div class="card">
-          <p class="main-text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Eligendi est doloremque, numquam similique tenetur magnam?</p>
-          <p class="date">5/10/2023</p>
+        <div v-for="note in notes" class="card" :style="{backgroundColor: note.backgroundColor}">
+          <p class="main-text">{{ note.title }}</p>
+          <p class="date">{{ note.date.toLocaleDateString("en-US") }}</p>
         </div>
       </div>
     </div>
@@ -121,8 +142,13 @@
       background-color: red;
     }
     textarea {
-      font-size: 16px;
+      font-size: 18px;
       padding: 10px;
+      border: 0.3px solid #ccc;
       border-radius: 10px;
+    }
+    textarea:focus {
+      outline: none !important;
+      border: 0.3px solid #a1b4e9;
     }
 </style>
